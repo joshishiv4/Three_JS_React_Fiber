@@ -1,35 +1,33 @@
 import useStore from "../../store";
 import { Sphere, TransformControls } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
-import { useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { TransformContext } from "../atom/TranformProvider";
 
 export default function BoundaryPoint({ objId, index, position, setOrbitEnabled }) {
     const updatePoint = useStore((state) => state.updatePoint);
 
     const meshRef = useRef(null);
-    const transformRef = useRef(null);
-    const { camera } = useThree();
+    // const transformRef = useRef(null);
+    // const { camera } = useThree();
+
+    const transformContext = useContext(TransformContext);
 
     const [active, setActive] = useState(false);
-
-    const handleChange = () => {
-        if (meshRef.current) {
-            const newPos = meshRef.current.position;
-            updatePoint(objId, index, [newPos.x, newPos.y, newPos.z]);
-        }
-    };
 
     function handleSelection(e) {
         e.stopPropagation();
 
-        setActive((prev) => {
-            return !prev
-        });
+        transformContext.setRef(meshRef.current);
+        transformContext.toggleActive();
+        setActive((prev) => 
+            !prev
+        );
     }
 
     return (
         <>
-            {active &&
+            {/* {active &&
                 <TransformControls
                     ref={transformRef}
                     object={active ? meshRef.current : null}
@@ -40,7 +38,7 @@ export default function BoundaryPoint({ objId, index, position, setOrbitEnabled 
                     camera={camera}
                     onChange={handleChange}
                 />
-            }
+            } */}
             <Sphere
                 ref={meshRef}
                 name={"boundaryPoint"+index}

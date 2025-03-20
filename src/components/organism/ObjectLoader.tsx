@@ -6,6 +6,7 @@ import Object3DComponent from "../molecule/Object3DComponent";
 
 // Store
 import useStore from "../../store";
+import { TransformProvider } from "../atom/TranformProvider";
 
 // Main App Component
 const ObjectRenderer = () => {
@@ -49,10 +50,12 @@ const ObjectRenderer = () => {
                 <axesHelper args={[5]} />
                 <ambientLight />
                 <OrbitControls ref={orbitRef} enabled={orbitEnabled} makeDefault/>
+                <TransformProvider>
+                    {objects.map((obj) => (
+                        <Object3DComponent key={obj.id} obj={obj} setOrbitEnabled={setOrbitEnabled} />
+                    ))}
+                </TransformProvider>
 
-                {objects.map((obj) => (
-                    <Object3DComponent key={obj.id} obj={obj} setOrbitEnabled={setOrbitEnabled} />
-                ))}
             </Canvas>
         </>
     );
