@@ -1,10 +1,11 @@
 import { TransformControls } from "@react-three/drei";
-import { createContext, useRef, useState, ReactNode, useEffect, useContext, forwardRef, useImperativeHandle } from "react";
+import { createContext, useRef, useState, ReactNode, useEffect, useContext, forwardRef, useImperativeHandle, useCallback } from "react";
 import { Object3D } from "three";
 
 export const TransformContext = createContext<{
     setRef: (ref: Object3D | null) => void;
     resetControl: () => void;
+    handleTransformEnd: () => void;
 } | null>(null);
 
 interface TransformProviderProps {
@@ -40,6 +41,17 @@ export const TransformProvider = forwardRef(({ children }: TransformProviderProp
         }
     }
 
+    useEffect(() => {
+        console.log("controlRef: ", controlRef.current);
+    }, [active])
+
+    const handleTransformEnd = useCallback(() => {
+        if (controlRef.current?.object) {
+            console.log("Transform finished: ", controlRef.current.object.position.toArray());
+        }
+    }, []);
+
+
     function resetControl() {
         if(meshRef.current)
             meshRef.current.material.color.set("red");
@@ -49,12 +61,13 @@ export const TransformProvider = forwardRef(({ children }: TransformProviderProp
     }
 
     return (
-        <TransformContext.Provider value={{ setRef, resetControl }}>
+        <TransformContext.Provider value={{ setRef, resetControl, handleTransformEnd }}>
             {active && meshRef.current && (
                 <TransformControls
                     ref={controlRef}
                     object={meshRef.current}
                     translationSnap={0.1}
+                    onMouseUp={handleTransformEnd}
                 />
             )}
             {children}

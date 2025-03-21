@@ -43,7 +43,7 @@ const ObjectRenderer = () => {
         <>
             <div style={{ position: "absolute", top: 10, left: 10, zIndex: 10 }}>
                 <label style={{marginRight: "5px"}}>Add Points to: </label>
-                <select onChange={(e) => setActiveMesh(e.target.value)}>
+                <select onChange={(e) => {setActiveMesh(e.target.value); transformContext.current.resetControl();}}>
                     {
                         objects.map((obj) => (
                             <option key={obj.id} value={obj.id}>{obj.id}</option>
@@ -54,7 +54,7 @@ const ObjectRenderer = () => {
             <button onClick={() => addPoint(activeMesh)} style={{ position: "absolute", top: 10, left: 285, zIndex: 10 }}>
                 Add Point
             </button>
-            <button onClick={() => {resetObjects(); cameraRef.current.position.set(4,4,5);  transformContext.current.resetControl()}} style={{ position: "absolute", top: 10, right: 10, zIndex: 10 }}>
+            <button onClick={() => {resetObjects(); transformContext.current.resetControl()}} style={{ position: "absolute", top: 10, right: 10, zIndex: 10 }}>
                 Reset All
             </button>
             <Canvas camera={{ position: [4,4,5], fov: 50, near: 0.1, far: 100, aspect: window.innerWidth / window.innerHeight }}>
@@ -64,9 +64,7 @@ const ObjectRenderer = () => {
                 <ambientLight />
                 <OrbitControls ref={orbitRef} makeDefault/>
                 <TransformProvider ref={transformContext}>
-                    {objects.map((obj) => (
-                        <Object3DComponent key={obj.id} obj={obj} />
-                    ))}
+                        <Object3DComponent objId={activeMesh} />
                 </TransformProvider>
             </Canvas>
         </>

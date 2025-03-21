@@ -28,7 +28,8 @@ const defaultObjects: Array<Object3DData> = [
             [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]
         ],
         color: "blue",
-        position: [-2, 1, -1]
+        position: [0,0,0]
+        // position: [-2, 1, -1]
     },
     {
         id: "pyramid",
@@ -37,7 +38,8 @@ const defaultObjects: Array<Object3DData> = [
             [-1, -1, -1], [1, -1, -1], [1, -1, 1], [-1, -1, 1]
         ],
         color: "red",
-        position: [2, 1, 0]
+        position: [0,0,0]
+        // position: [2, 1, 0]
     },
     {
         id: "hexagonal_prism",
@@ -46,7 +48,8 @@ const defaultObjects: Array<Object3DData> = [
             [1, 0, 1], [0.5, 1, 1], [-0.5, 1, 1], [-1, 0, 1], [-0.5, -1, 1], [0.5, -1, 1]
         ],
         color: "green",
-        position: [0, 1, 2]
+        position: [0,0,0]
+        // position: [0, 1, 2]
     }
 ];
 
@@ -61,23 +64,26 @@ const store = ((set:any) => ({
                         ...obj,
                         boundary: [
                             ...obj.boundary,
-                            [Math.random() * 2 - 1, Math.random() * 2 - 1, 0],
+                            [(Math.random() * 2 - 1).toFixed(2), (Math.random() * 2 - 1).toFixed(2), 0],
                         ],
                     }
                     : obj
             ),
         })),
     updatePoint: (id: string, index: number, point: Point) =>
-        set((state: Store) => ({
-            objects: state.objects.map((obj: Object3DData) =>
-                obj.id === id
-                    ? {
-                        ...obj,
-                        boundary: obj.boundary.map((p, i) => (i === index ? point : p)),
-                    }
-                    : obj
-            ),
-        })),
+        set((state: Store) => {
+            console.log("updatePoint", id, index, point);
+            return {
+                objects: state.objects.map((obj: Object3DData) =>
+                    obj.id === id
+                        ? {
+                            ...obj,
+                            boundary: obj.boundary.map((p, i) => (i === index ? point : p)),
+                        }
+                        : obj
+                ),
+            }
+        }),
     updatePosition: (id: string, point: Point) =>
         set((state: Store) => ({
             objects: state.objects.map((obj: Object3DData) =>
