@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 
@@ -15,7 +15,8 @@ const ObjectRenderer = () => {
     const resetObjects = useStore((state) => state.resetObjects);
     const orbitRef = useRef(null);
     const cameraRef = useRef(null);
-    const [orbitEnabled, setOrbitEnabled] = React.useState(true);
+
+    const [activeMesh, setActiveMesh] = useState(objects[0]?.id);
 
     useEffect(() => {
         const handleResize = () => {
@@ -38,7 +39,14 @@ const ObjectRenderer = () => {
 
     return (
         <>
-            <button onClick={() => addPoint("obj1")} style={{ position: "absolute", top: 10, left: 10, zIndex: 10 }}>
+            <select style={{ position: "absolute", top: 10, left: 260, zIndex: 10 }} onChange={(e) => setActiveMesh(e.target.value)}>
+                {
+                    objects.map((obj) => (
+                        <option key={obj.id} value={obj.id}>{obj.id}</option>
+                    ))
+                }
+            </select>
+            <button onClick={() => addPoint(activeMesh)} style={{ position: "absolute", top: 10, left: 10, zIndex: 10 }}>
                 Add Point
             </button>
             <button onClick={() => resetObjects()} style={{ position: "absolute", top: 10, left: 135, zIndex: 10 }}>
@@ -49,10 +57,10 @@ const ObjectRenderer = () => {
                 <gridHelper args={[10, 10]} />
                 <axesHelper args={[5]} />
                 <ambientLight />
-                <OrbitControls ref={orbitRef} enabled={orbitEnabled} makeDefault/>
+                <OrbitControls ref={orbitRef} makeDefault/>
                 <TransformProvider>
                     {objects.map((obj) => (
-                        <Object3DComponent key={obj.id} obj={obj} setOrbitEnabled={setOrbitEnabled} />
+                        <Object3DComponent key={obj.id} obj={obj} />
                     ))}
                 </TransformProvider>
 

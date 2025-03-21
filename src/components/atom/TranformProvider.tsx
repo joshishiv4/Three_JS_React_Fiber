@@ -12,7 +12,7 @@ interface TransformProviderProps {
 
 export const TransformProvider = ({ children }: TransformProviderProps) => {
     const meshRef = useRef<Object3D | null>(null);
-    const controlRef = useRef(null); // Ref for TransformControls
+    const controlRef = useRef(null);
 
     const [active, setActive] = useState(false);
 
@@ -27,7 +27,7 @@ export const TransformProvider = ({ children }: TransformProviderProps) => {
 
         // SET/RESET ACTIVE OBJECT COLOR
         if (!isCurrentObj) {
-            ref.material.color.set("green");
+            ref.material.color.set("lightgreen");
             setActive(true);
             meshRef.current = ref;
         } else {

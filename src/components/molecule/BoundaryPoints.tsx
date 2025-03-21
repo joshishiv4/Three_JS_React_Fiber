@@ -7,10 +7,9 @@ type BoundaryPointProps = {
     objId: string;
     index: number;
     position: [number, number, number];
-    setOrbitEnabled: (enabled: boolean) => void;
 };
 
-export default function BoundaryPoint({ objId, index, position, setOrbitEnabled }: BoundaryPointProps) {
+export default function BoundaryPoint({ objId, index, position }: BoundaryPointProps) {
     const updatePoint = useStore((state) => state.updatePoint);
 
     const meshRef = useRef(null);

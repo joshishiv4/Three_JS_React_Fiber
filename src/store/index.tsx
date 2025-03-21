@@ -22,7 +22,7 @@ type Store = {
 
 const defaultObjects: Array<Object3DData> = [
     {
-        id: "obj1",
+        id: "cube",
         boundary: [
             [-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1],
             [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]
