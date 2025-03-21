@@ -1,32 +1,49 @@
 import { TransformControls } from "@react-three/drei";
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useRef, useState, ReactNode } from "react";
+import { Object3D } from "three";
 
-export const TransformContext = createContext(null);
+export const TransformContext = createContext<{
+    setRef: (ref: Object3D | null) => void;
+} | null>(null);
 
-export const TransformProvider = ({ children }) => {
-    const [active, setActive] = useState(false);
-    const [onTransformUpdate, setOnTransformUpdate] = useState(null);
-    const meshRef = useRef(null);
+interface TransformProviderProps {
+    children: ReactNode;
+}
+
+export const TransformProvider = ({ children }: TransformProviderProps) => {
+    const meshRef = useRef<Object3D | null>(null);
     const controlRef = useRef(null); // Ref for TransformControls
 
-    function toggleActive() {
-        setActive((prev) => !prev);
-    }
+    const [active, setActive] = useState(false);
 
-    function setRef(ref) {
-        meshRef.current = ref;
-    }
+    function setRef(ref: Object3D | null) {
+        const isCurrentObj = ref?.id === meshRef.current?.id;
+        // RESET PREVIOUS ACTIVE OBJECT COLOR AND USER DATA
+        if (meshRef.current) {
+            meshRef.current.material.color.set("red");
+        }
 
-    let handleChange = null;
+        if(!ref) return;
+
+        // SET/RESET ACTIVE OBJECT COLOR
+        if (!isCurrentObj) {
+            ref.material.color.set("green");
+            setActive(true);
+            meshRef.current = ref;
+        } else {
+            ref.material.color.set("red");
+            setActive(false);
+            meshRef.current = null;
+        }
+    }
 
     return (
-        <TransformContext.Provider value={{ setRef, toggleActive, handleChange }}>
+        <TransformContext.Provider value={{ setRef }}>
             {active && meshRef.current && (
                 <TransformControls
-                    ref={(control) => (controlRef.current = control)} // Use ref-setter function
-                    object={meshRef.current} // Pass the actual mesh, not the ref object
+                    ref={controlRef}
+                    object={meshRef.current}
                     translationSnap={0.1}
-                    onChange={handleChange}
                 />
             )}
             {children}

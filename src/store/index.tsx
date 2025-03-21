@@ -1,59 +1,61 @@
-import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 // Define the Object3DData type
 type Object3DData = {
     id: string;
-    boundary: Array<Array<number>>;
+    boundary: Array<Point>;
     color: string;
-    position: Array<number>;
-}
+    position: Point;
+};
+
+type Point = [number, number, number];
 
 // Define the store type
 type Store = {
     objects: Array<Object3DData>;
     addPoint: (id: string) => void;
     updatePoint: (id: string, index: number, point: Point) => void;
-    updatePosition: (id: string, index: number, point: Point) => void;
-}
+    updatePosition: (id: string, point: Point) => void;
+    resetObjects: () => void;
+};
 
-const defaultObjects = [
+const defaultObjects: Array<Object3DData> = [
     {
         id: "obj1",
-        "boundary": [
+        boundary: [
             [-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1],
             [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]
         ],
         color: "blue",
-        // position: [-2, 1, -1]
-        position: [0,1,0]
+        position: [-2, 1, -1]
     },
-    // {
-    //     id: "pyramid",
-    //     boundary: [
-    //         [0, 1, 0],  // Top Vertex
-    //         [-1, -1, -1], [1, -1, -1], [1, -1, 1], [-1, -1, 1]
-    //     ],
-    //     color: "red",
-    //     position: [2, 1, 0]
-    // },
-    // {
-    //     id: "hexagonal_prism",
-    //     boundary: [
-    //         [1, 0, -1], [0.5, 1, -1], [-0.5, 1, -1], [-1, 0, -1], [-0.5, -1, -1], [0.5, -1, -1],
-    //         [1, 0, 1], [0.5, 1, 1], [-0.5, 1, 1], [-1, 0, 1], [-0.5, -1, 1], [0.5, -1, 1]
-    //     ],
-    //     color: "green",
-    //     position: [0, 1, 2]
-    // }
-]
+    {
+        id: "pyramid",
+        boundary: [
+            [0, 1, 0],
+            [-1, -1, -1], [1, -1, -1], [1, -1, 1], [-1, -1, 1]
+        ],
+        color: "red",
+        position: [2, 1, 0]
+    },
+    {
+        id: "hexagonal_prism",
+        boundary: [
+            [1, 0, -1], [0.5, 1, -1], [-0.5, 1, -1], [-1, 0, -1], [-0.5, -1, -1], [0.5, -1, -1],
+            [1, 0, 1], [0.5, 1, 1], [-0.5, 1, 1], [-1, 0, 1], [-0.5, -1, 1], [0.5, -1, 1]
+        ],
+        color: "green",
+        position: [0, 1, 2]
+    }
+];
 
 // Create the Zustand store
-const store = ((set) => ({
+const store = ((set:any) => ({
     objects: defaultObjects,
-    addPoint: (id) =>
-        set((state) => ({
-            objects: state.objects.map((obj) =>
+    addPoint: (id: string) =>
+        set((state: Store) => ({
+            objects: state.objects.map((obj: Object3DData) =>
                 obj.id === id
                     ? {
                         ...obj,
@@ -65,9 +67,9 @@ const store = ((set) => ({
                     : obj
             ),
         })),
-    updatePoint: (id, index, point) =>
-        set((state) => ({
-            objects: state.objects.map((obj) =>
+    updatePoint: (id: string, index: number, point: Point) =>
+        set((state: Store) => ({
+            objects: state.objects.map((obj: Object3DData) =>
                 obj.id === id
                     ? {
                         ...obj,
@@ -76,9 +78,9 @@ const store = ((set) => ({
                     : obj
             ),
         })),
-    updatePosition: (id, point) =>
-        set((state) => ({
-            objects: state.objects.map((obj) =>
+    updatePosition: (id: string, point: Point) =>
+        set((state: Store) => ({
+            objects: state.objects.map((obj: Object3DData) =>
                 obj.id === id
                     ? {
                         ...obj,

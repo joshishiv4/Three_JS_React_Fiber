@@ -1,18 +1,21 @@
 import useStore from "../../store";
-import { Sphere, TransformControls } from "@react-three/drei";
-import { useThree } from "@react-three/fiber";
-import { useRef, useState } from "react";
-// import { TransformContext } from "../atom/TranformProvider";
+import { Sphere } from "@react-three/drei";
+import { useContext, useRef } from "react";
+import { TransformContext } from "../atom/TranformProvider";
 
-export default function BoundaryPoint({ objId, index, position, setOrbitEnabled }) {
+type BoundaryPointProps = {
+    objId: string;
+    index: number;
+    position: [number, number, number];
+    setOrbitEnabled: (enabled: boolean) => void;
+};
+
+export default function BoundaryPoint({ objId, index, position, setOrbitEnabled }: BoundaryPointProps) {
     const updatePoint = useStore((state) => state.updatePoint);
 
     const meshRef = useRef(null);
-    const transformRef = useRef(null);
-    const { camera } = useThree();
 
-
-    const [active, setActive] = useState(false);
+    const transformContext = useContext(TransformContext);
 
     const handleChange = () => {
         if (meshRef.current) {
@@ -21,38 +24,21 @@ export default function BoundaryPoint({ objId, index, position, setOrbitEnabled 
         }
     };
 
-    function handleSelection(e) {
-        e.stopPropagation();
-
-        // transformContext.setRef(meshRef.current);
-        // transformContext.toggleActive();
-        setActive((prev) => 
-            !prev
-        );
+    function handleSelection() {
+        transformContext.setRef(meshRef.current);
     }
 
     return (
         <>
-            {active &&
-                <TransformControls
-                    ref={transformRef}
-                    object={meshRef.current}
-                    translationSnap={0.2}
-                    mode="translate"
-                    enabled={active}
-                    visible={active}
-                    camera={camera}
-                    onChange={handleChange}
-                />
-            }
             <Sphere
                 ref={meshRef}
                 name={"boundaryPoint"+index}
                 args={[0.05, 12, 12]}
                 position={position}
                 onClick={handleSelection}
+                onUpdate={handleChange}
             >
-                <meshStandardMaterial color={!active ? "red" : "white"} />
+                <meshStandardMaterial color={"red"} />
             </Sphere>
         </>
     );
