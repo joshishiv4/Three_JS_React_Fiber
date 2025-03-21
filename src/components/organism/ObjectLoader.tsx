@@ -18,6 +18,8 @@ const ObjectRenderer = () => {
 
     const [activeMesh, setActiveMesh] = useState(objects[0]?.id);
 
+    const transformContext = useRef(null);
+
     useEffect(() => {
         const handleResize = () => {
             if (cameraRef.current) {
@@ -52,7 +54,7 @@ const ObjectRenderer = () => {
             <button onClick={() => addPoint(activeMesh)} style={{ position: "absolute", top: 10, left: 285, zIndex: 10 }}>
                 Add Point
             </button>
-            <button onClick={() => {resetObjects(); cameraRef.current.position.set(4,4,5)}} style={{ position: "absolute", top: 10, right: 10, zIndex: 10 }}>
+            <button onClick={() => {resetObjects(); cameraRef.current.position.set(4,4,5);  transformContext.current.resetControl()}} style={{ position: "absolute", top: 10, right: 10, zIndex: 10 }}>
                 Reset All
             </button>
             <Canvas camera={{ position: [4,4,5], fov: 50, near: 0.1, far: 100, aspect: window.innerWidth / window.innerHeight }}>
@@ -61,12 +63,11 @@ const ObjectRenderer = () => {
                 <axesHelper args={[5]} />
                 <ambientLight />
                 <OrbitControls ref={orbitRef} makeDefault/>
-                <TransformProvider>
+                <TransformProvider ref={transformContext}>
                     {objects.map((obj) => (
                         <Object3DComponent key={obj.id} obj={obj} />
                     ))}
                 </TransformProvider>
-
             </Canvas>
         </>
     );
