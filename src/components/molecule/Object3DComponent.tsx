@@ -16,13 +16,13 @@ export default function Object3DComponent({ obj, setOrbitEnabled }:Object3DCompo
   return (
     <>
       <mesh geometry={geometry} position={obj.position}>
-        <meshStandardMaterial color={obj.color} side={THREE.DoubleSide} />
+        <meshStandardMaterial color={obj.color} transparent opacity={0.6} side={THREE.DoubleSide} />
         {obj.boundary?.map((point:Number, index: Number) => (
           <BoundaryPoint key={index} objId={obj.id} index={index} position={point} setOrbitEnabled={setOrbitEnabled} />
         ))}
       </mesh>
       <mesh geometry={geometry} position={obj.position}>
-        <meshStandardMaterial wireframe={true} clone={"white"} side={THREE.DoubleSide} />
+        <meshStandardMaterial wireframe={true} transparent opacity={0.3} side={THREE.DoubleSide} />
       </mesh>
     </>
   );
