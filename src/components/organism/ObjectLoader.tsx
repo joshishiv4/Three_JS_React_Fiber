@@ -39,17 +39,20 @@ const ObjectRenderer = () => {
 
     return (
         <>
-            <select style={{ position: "absolute", top: 10, left: 260, zIndex: 10 }} onChange={(e) => setActiveMesh(e.target.value)}>
-                {
-                    objects.map((obj) => (
-                        <option key={obj.id} value={obj.id}>{obj.id}</option>
-                    ))
-                }
-            </select>
-            <button onClick={() => addPoint(activeMesh)} style={{ position: "absolute", top: 10, left: 10, zIndex: 10 }}>
+            <div style={{ position: "absolute", top: 10, left: 10, zIndex: 10 }}>
+                <label style={{marginRight: "5px"}}>Add Points to: </label>
+                <select onChange={(e) => setActiveMesh(e.target.value)}>
+                    {
+                        objects.map((obj) => (
+                            <option key={obj.id} value={obj.id}>{obj.id}</option>
+                        ))
+                    }
+                </select>
+            </div>
+            <button onClick={() => addPoint(activeMesh)} style={{ position: "absolute", top: 10, left: 285, zIndex: 10 }}>
                 Add Point
             </button>
-            <button onClick={() => resetObjects()} style={{ position: "absolute", top: 10, left: 135, zIndex: 10 }}>
+            <button onClick={() => resetObjects()} style={{ position: "absolute", top: 10, right: 10, zIndex: 10 }}>
                 Reset All
             </button>
             <Canvas camera={{ position: [4, 3, 4], fov: 50, near: 0.1, far: 100, aspect: window.innerWidth / window.innerHeight }}>
