@@ -40,7 +40,7 @@ const defaultObjects: Array<Object3DData> = [
             [0, 1, 0],
             [-1, -1, -1], [1, -1, -1], [1, -1, 1], [-1, -1, 1]
         ],
-        color: "red",
+        color: "pink",
         position: [0,1,0]
         // position: [2, 1, 0]
     },
