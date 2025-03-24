@@ -64,7 +64,7 @@ const store = ((set:any) => ({
                         ...obj,
                         boundary: [
                             ...obj.boundary,
-                            [(Math.random() * 2 - 1).toFixed(2), (Math.random() * 2 - 1).toFixed(2), 0],
+                            [(Math.random() * 2 - 1), (Math.random() * 2 - 1), 0],
                         ],
                     }
                     : obj
@@ -72,7 +72,6 @@ const store = ((set:any) => ({
         })),
     updatePoint: (id: string, index: number, point: Point) =>
         set((state: Store) => {
-            console.log("updatePoint", id, index, point);
             return {
                 objects: state.objects.map((obj: Object3DData) =>
                     obj.id === id

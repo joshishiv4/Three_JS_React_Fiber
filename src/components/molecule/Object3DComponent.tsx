@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import BoundaryPoint from "./BoundaryPoints";
 import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useStore from "../../store";
 import { Html } from "@react-three/drei";
 
@@ -9,55 +9,41 @@ type Object3DComponentProps = {
   objId: string;
 };
 export default function Object3DComponent({ objId }:Object3DComponentProps) {
-  const [geometry, setGeometry] = useState(null);
-  const [obj, setObj] = useState(null);
-  const objects = useStore((state) => state.objects);
+  // const [obj, setObj] = useState(null);
+  const obj = useStore((state) => state.objects.find((o) => o.id === objId));
 
   const meshRef = useRef(null);
+  const meshEdgeRef = useRef(null);
+
+  const geometry = useMemo(() => {
+    if(obj) {
+      const points = obj.boundary.map((point) => new THREE.Vector3(...point));
+      return new ConvexGeometry(points);
+    }
+    return null;
+  }, [obj]);
 
   useEffect(() => {
-    const tmp = objects.find((o) => o.id === objId);
-    setObj(null);
-
-    // Subscribe to changes in objects state
-    useStore.subscribe((state) => {
-      const obj = state.objects.find((o) => o.id === objId);
-      setObj(obj);
-    });
-
-    const geometry = new ConvexGeometry(tmp.boundary?.map((p: Array<number>) => new THREE.Vector3(p[0], p[1], p[2])));
     if(meshRef.current) {
       meshRef.current.geometry.dispose();
       meshRef.current.geometry = geometry;
     }
-    setTimeout(() => {
-      setGeometry(geometry);
-      setObj(() => tmp);
-    }, 0);
-  }, [objId])
-
-  useEffect(() => {
-    console.log("OBJ UPDATED");
-  }, [obj])
+    if(meshEdgeRef.current) {
+      meshEdgeRef.current.geometry.dispose();
+      meshEdgeRef.current.geometry = geometry;
+    }
+  }, [geometry])
 
   return (
     <>
     {
       obj &&
       <>
-        <mesh geometry={geometry} position={obj.position} ref={meshRef}>
-          <Html>
-            {new Date().getTime()}
-          </Html>
+        <mesh position={obj.position} ref={meshRef}>
           <meshStandardMaterial color={obj.color} transparent opacity={0.6} side={THREE.DoubleSide} />
-          {
-            obj.boundary &&
-            obj.boundary?.map((point:Number, index: Number) => (
-              <BoundaryPoint key={obj.id+point} objId={obj.id} index={index} position={point}/>
-            ))
-          }
+          <BoundaryPoint objId={obj.id} boundary={obj.boundary}/>
         </mesh>
-        <mesh geometry={geometry} position={obj.position}>
+        <mesh position={obj.position} ref={meshEdgeRef}>
           <meshStandardMaterial wireframe={true} transparent opacity={0.3} side={THREE.DoubleSide} />
         </mesh>
       </>

@@ -1,56 +1,68 @@
 import useStore from "../../store";
 import { Html, Sphere } from "@react-three/drei";
-import { useContext, useRef, memo, useState, useCallback, useEffect } from "react";
+import { useContext, useRef, memo, useState, useCallback, useEffect, Fragment, useMemo } from "react";
 import { TransformContext } from "../atom/TranformProvider";
 import * as THREE from "three";
 
 type BoundaryPointProps = {
     objId: string;
     index: number;
-    position: [number, number, number];
+    boundary: Array<number>;
 };
 
-const BoundaryPoint = memo(({ objId, index, position }: BoundaryPointProps) => {
+const BoundaryPoint = memo(({ objId, boundary }: BoundaryPointProps) => {
     const updatePoint = useStore((state) => state.updatePoint);
-    const meshRef = useRef(null);
+    const meshRef = useRef([]);
     const transformContext = useContext(TransformContext);
-    const [localPosition, setLocalPosition] = useState(position);
+    const active = useRef(null);
 
     // Handle drag or position update only for the specific clicked element
-    const handleDrag = () => {
-        console.log("handleDrag");
-        
+    const handleDrag = (position) => {
         if (meshRef.current) {
-            const newPos = meshRef.current.position.toArray();
-            updatePoint(objId, index, newPos);
+            updatePoint(objId, active.current, position);
         }
-    }
+    };
 
     // Handle selection to avoid unnecessary re-renders
-    const handleSelection = useCallback(() => {
-        transformContext.setRef(meshRef.current);
+    const handleSelection = useCallback((index) => {
+        const ref = meshRef.current[index];
+        active.current = index;
+        if (ref) {
+            transformContext?.setRef(ref);
+            transformContext?.updateCallBack(handleDrag);
+        }
     }, [transformContext]);
 
-    useEffect(() => {
-        console.log("transformContext: ", transformContext);
-    }, [transformContext?.handleTransformEnd])
+    const sphereObj = (position, index) => {
+        return (
+            <Sphere
+                ref={(ref) => (meshRef.current[index] = ref)}
+                key={objId+'boundaryPoint'+index}
+                name={"boundaryPoint" + index}
+                args={[0.05, 12, 12]}
+                position={position}
+                onClick={() => handleSelection(index)}
+            >
+                <Html>
+                    <div style={{pointerEvents: "none"}}>
+                        <label style={{ whiteSpace: "nowrap" }}>{"Point " + index}</label>
+                        <br />
+                        <label style={{ whiteSpace: "nowrap" }}>({position[0].toFixed(1)}, {position[1].toFixed(1)}, {position[2].toFixed(1)})</label>
+                    </div>
+                </Html>
+                <meshStandardMaterial color={"red"} />
+            </Sphere>
+        )
+    }
 
     return (
-        <Sphere
-            ref={meshRef}
-            name={"boundaryPoint" + index}
-            args={[0.05, 12, 12]}
-            position={localPosition}  // Use local state for position
-            onClick={handleSelection}
-            onPointerUp={handleDrag}  // Call update only when dragging stops
-        >
-            <Html>
-                <label style={{ whiteSpace: "nowrap" }}>{"Point " + index}</label>
-                <br />
-                <label style={{ whiteSpace: "nowrap" }}>({localPosition[0]}, {localPosition[1]}, {localPosition[2]})</label>
-            </Html>
-            <meshStandardMaterial color={"red"} />
-        </Sphere>
+        <>
+            {
+                boundary?.map((position, index) => (
+                    sphereObj(position, index)
+                ))
+            }
+        </>
     );
 });
 
