@@ -64,7 +64,7 @@ const ObjectRenderer = () => {
                 <ambientLight />
                 <OrbitControls ref={orbitRef} makeDefault/>
                 <TransformProvider ref={transformContext}>
-                        <Object3DComponent objId={activeMesh} />
+                    <Object3DComponent objId={activeMesh} />
                 </TransformProvider>
             </Canvas>
         </>

@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+import * as THREE from 'three';
+import { ConvexGeometry } from 'three/examples/jsm/Addons.js';
+
 // Define the Object3DData type
 type Object3DData = {
     id: string;
@@ -57,19 +60,36 @@ const defaultObjects: Array<Object3DData> = [
 const store = ((set:any) => ({
     objects: defaultObjects,
     addPoint: (id: string) =>
-        set((state: Store) => ({
-            objects: state.objects.map((obj: Object3DData) =>
-                obj.id === id
-                    ? {
-                        ...obj,
-                        boundary: [
-                            ...obj.boundary,
-                            [(Math.random() * 2 - 1), (Math.random() * 2 - 1), 0],
-                        ],
-                    }
-                    : obj
-            ),
-        })),
+        set((state: Store) => {
+            // FIND EDGES OF THE ACTIVE GEOMETRY
+            const points = state.objects.find((o) => o.id === id)?.boundary.map((point) => new THREE.Vector3(...point));
+            const edgesGeometry = new THREE.EdgesGeometry(new ConvexGeometry(points));
+            const edgeVertices = edgesGeometry.getAttribute('position').array;
+            const edges = [];
+            for (let i = 0; i < edgeVertices.length; i += 6) {
+                const v1 = new THREE.Vector3(edgeVertices[i], edgeVertices[i + 1], edgeVertices[i + 2]);
+                const v2 = new THREE.Vector3(edgeVertices[i + 3], edgeVertices[i + 4], edgeVertices[i + 5]);
+                edges.push([v1, v2]);
+            }
+
+            // ADD A RANDOM POINT ON A RANDOM EDGE
+            const randomEdge = edges[Math.floor(Math.random() * edges.length)];
+            const randomPoint = randomEdge[0].clone().lerp(randomEdge[1], Math.random());
+
+            return {
+                objects: state.objects.map((obj: Object3DData) =>
+                    obj.id === id
+                        ? {
+                            ...obj,
+                            boundary: [
+                                ...obj.boundary,
+                                randomPoint.toArray(),
+                            ],
+                        }
+                        : obj
+                ),
+            }
+        }),
     updatePoint: (id: string, index: number, point: Point) =>
         set((state: Store) => {
             return {

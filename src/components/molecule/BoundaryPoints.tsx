@@ -45,9 +45,9 @@ const BoundaryPoint = memo(({ objId, boundary }: BoundaryPointProps) => {
             >
                 <Html>
                     <div style={{pointerEvents: "none"}}>
-                        <label style={{ whiteSpace: "nowrap" }}>{"Point " + index}</label>
-                        <br />
-                        <label style={{ whiteSpace: "nowrap" }}>({position[0].toFixed(1)}, {position[1].toFixed(1)}, {position[2].toFixed(1)})</label>
+                        <label style={{ whiteSpace: "nowrap" }}>{index}</label>
+                        {/* <br />
+                        <label style={{ whiteSpace: "nowrap" }}>({position[0].toFixed(1)}, {position[1].toFixed(1)}, {position[2].toFixed(1)})</label> */}
                     </div>
                 </Html>
                 <meshStandardMaterial color={"red"} />
