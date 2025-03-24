@@ -57,7 +57,7 @@ const ObjectRenderer = () => {
             <button onClick={() => {resetObjects(); transformContext.current.resetControl()}} style={{ position: "absolute", top: 10, right: 10, zIndex: 10 }}>
                 Reset All
             </button>
-            <Canvas camera={{ position: [4,4,5], fov: 50, near: 0.1, far: 100, aspect: window.innerWidth / window.innerHeight }}>
+            <Canvas frameloop="demand" camera={{ position: [4,4,5], fov: 50, near: 0.1, far: 100, aspect: window.innerWidth / window.innerHeight }}>
                 <SetCameraRef />
                 <gridHelper args={[10, 10]} />
                 <axesHelper args={[5]} />
