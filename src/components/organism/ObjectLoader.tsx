@@ -41,22 +41,24 @@ const ObjectRenderer = () => {
 
     return (
         <>
-            <div style={{ position: "absolute", top: 10, left: 10, zIndex: 10 }}>
-                <label style={{marginRight: "5px"}}>Add Points to: </label>
-                <select onChange={(e) => {setActiveMesh(e.target.value); transformContext.current.resetControl();}}>
-                    {
-                        objects.map((obj) => (
-                            <option key={obj.id} value={obj.id}>{obj.id}</option>
-                        ))
-                    }
-                </select>
-            </div>
-            <button onClick={() => addPoint(activeMesh)} style={{ position: "absolute", top: 10, left: 285, zIndex: 10 }}>
-                Add Point
-            </button>
-            <button onClick={() => {resetObjects(); transformContext.current.resetControl()}} style={{ position: "absolute", top: 10, right: 10, zIndex: 10 }}>
-                Reset All
-            </button>
+            <header>
+                <div style={{ position: "absolute", top: 10, left: 10, zIndex: 10 }}>
+                    <label style={{marginRight: "5px"}}>Add Points to: </label>
+                    <select onChange={(e) => {setActiveMesh(e.target.value); transformContext.current.resetControl();}}>
+                        {
+                            objects.map((obj) => (
+                                <option key={obj.id} value={obj.id}>{obj.id}</option>
+                            ))
+                        }
+                    </select>
+                </div>
+                <button onClick={() => addPoint(activeMesh)} style={{ position: "absolute", top: 10, left: 285, zIndex: 10 }}>
+                    Add Point
+                </button>
+                <button onClick={() => {resetObjects(); transformContext.current.resetControl()}} style={{ position: "absolute", top: 10, right: 10, zIndex: 10 }}>
+                    Reset All
+                </button>
+            </header>
             <Canvas frameloop="demand" camera={{ position: [4,4,5], fov: 50, near: 0.1, far: 100, aspect: window.innerWidth / window.innerHeight }}>
                 <SetCameraRef />
                 <gridHelper args={[10, 10]} />

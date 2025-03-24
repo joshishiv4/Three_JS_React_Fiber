@@ -31,7 +31,7 @@ const defaultObjects: Array<Object3DData> = [
             [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]
         ],
         color: "blue",
-        position: [0,0,0]
+        position: [0,1,0]
         // position: [-2, 1, -1]
     },
     {
@@ -41,7 +41,7 @@ const defaultObjects: Array<Object3DData> = [
             [-1, -1, -1], [1, -1, -1], [1, -1, 1], [-1, -1, 1]
         ],
         color: "red",
-        position: [0,0,0]
+        position: [0,1,0]
         // position: [2, 1, 0]
     },
     {
@@ -51,7 +51,7 @@ const defaultObjects: Array<Object3DData> = [
             [1, 0, 1], [0.5, 1, 1], [-0.5, 1, 1], [-1, 0, 1], [-0.5, -1, 1], [0.5, -1, 1]
         ],
         color: "green",
-        position: [0,0,0]
+        position: [0,1,0]
         // position: [0, 1, 2]
     }
 ];
