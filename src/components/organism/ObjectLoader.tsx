@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 
@@ -13,12 +13,12 @@ const ObjectRenderer = () => {
     const objects = useStore((state) => state.objects);
     const addPoint = useStore((state) => state.addPoint);
     const resetObjects = useStore((state) => state.resetObjects);
-    const orbitRef = useRef(null);
-    const cameraRef = useRef(null);
+    const orbitRef:any = useRef(null);
+    const cameraRef:any = useRef(null);
 
     const [activeMesh, setActiveMesh] = useState(objects[0]?.id);
 
-    const transformContext = useRef(null);
+    const transformContext:any = useRef(null);
 
     useEffect(() => {
         const handleResize = () => {

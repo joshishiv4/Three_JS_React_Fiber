@@ -1,11 +1,11 @@
 import { TransformControls } from "@react-three/drei";
-import { createContext, useRef, useState, ReactNode, useEffect, useContext, forwardRef, useImperativeHandle, useCallback } from "react";
+import { createContext, useRef, useState, ReactNode, useContext, forwardRef, useImperativeHandle, useCallback } from "react";
 import { Object3D } from "three";
 
 export const TransformContext = createContext<{
     setRef: (ref: Object3D | null) => void;
     resetControl: () => void;
-    updateCallBack: () => void;
+    updateCallBack: (position: any) => void;
 } | null>(null);
 
 interface TransformProviderProps {
@@ -13,9 +13,9 @@ interface TransformProviderProps {
 }
 
 export const TransformProvider = forwardRef(({ children }: TransformProviderProps, ref) => {
-    const meshRef = useRef<Object3D | null>(null);
-    const controlRef = useRef(null);
-    const updateCallbackRef = useRef<() => void>(null);
+    const meshRef:any = useRef<Object3D | null>(null);
+    const controlRef:any = useRef(null);
+    const updateCallbackRef:any = useRef<() => void>(null);
 
     const [active, setActive] = useState(false);
 
@@ -23,7 +23,7 @@ export const TransformProvider = forwardRef(({ children }: TransformProviderProp
         resetControl: () => resetControl(),
     }));
 
-    function setRef(ref: Object3D | null) {
+    function setRef(ref:any) {
         const isCurrentObj = ref?.id === meshRef.current?.id;
         // RESET PREVIOUS ACTIVE OBJECT COLOR AND USER DATA
         if (meshRef.current) {
@@ -42,7 +42,7 @@ export const TransformProvider = forwardRef(({ children }: TransformProviderProp
         }
     }
 
-    const updateCallBack = (callback: () => void) => {
+    const updateCallBack = (callback?: () => void) => {
         updateCallbackRef.current = callback;
     };
 

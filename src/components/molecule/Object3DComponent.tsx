@@ -1,23 +1,22 @@
 import * as THREE from "three";
 import BoundaryPoint from "./BoundaryPoints";
 import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import useStore from "../../store";
-import { Html } from "@react-three/drei";
 
 type Object3DComponentProps = {
   objId: string;
 };
 export default function Object3DComponent({ objId }:Object3DComponentProps) {
   // const [obj, setObj] = useState(null);
-  const obj = useStore((state) => state.objects.find((o) => o.id === objId));
+  const obj:any = useStore((state) => state.objects.find((o) => o.id === objId));
 
-  const meshRef = useRef(null);
-  const meshEdgeRef = useRef(null);
+  const meshRef:any = useRef(null);
+  const meshEdgeRef:any = useRef(null);
 
   const geometry = useMemo(() => {
     if(obj) {
-      const points = obj.boundary.map((point) => new THREE.Vector3(...point));
+      const points = obj.boundary.map((point:any) => new THREE.Vector3(...point));
       return new ConvexGeometry(points);
     }
     return null;

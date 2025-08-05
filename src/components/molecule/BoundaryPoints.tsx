@@ -1,30 +1,28 @@
 import useStore from "../../store";
 import { Html, Sphere } from "@react-three/drei";
-import { useContext, useRef, memo, useState, useCallback, useEffect, Fragment, useMemo } from "react";
+import { useContext, useRef, memo, useCallback } from "react";
 import { TransformContext } from "../atom/TranformProvider";
-import * as THREE from "three";
 
 type BoundaryPointProps = {
     objId: string;
-    index: number;
     boundary: Array<number>;
 };
 
 const BoundaryPoint = memo(({ objId, boundary }: BoundaryPointProps) => {
     const updatePoint = useStore((state) => state.updatePoint);
-    const meshRef = useRef([]);
+    const meshRef:any = useRef([]);
     const transformContext = useContext(TransformContext);
-    const active = useRef(null);
+    const active:any = useRef(null);
 
     // Handle drag or position update only for the specific clicked element
-    const handleDrag = (position) => {
+    function handleDrag(position?:any) {
         if (meshRef.current) {
             updatePoint(objId, active.current, position);
         }
     };
 
     // Handle selection to avoid unnecessary re-renders
-    const handleSelection = useCallback((index) => {
+    const handleSelection = useCallback((index:number) => {
         const ref = meshRef.current[index];
         active.current = index;
         if (ref) {
@@ -33,10 +31,10 @@ const BoundaryPoint = memo(({ objId, boundary }: BoundaryPointProps) => {
         }
     }, [transformContext]);
 
-    const sphereObj = (position, index) => {
+    const sphereObj = (position:any, index:number) => {
         return (
             <Sphere
-                ref={(ref) => (meshRef.current[index] = ref)}
+                ref={(ref:any) => (meshRef.current[index] = ref)}
                 key={objId+'boundaryPoint'+index}
                 name={"boundaryPoint" + index}
                 args={[0.05, 12, 12]}
