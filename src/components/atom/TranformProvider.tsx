@@ -1,10 +1,11 @@
 import { TransformControls } from "@react-three/drei";
-import { createContext, useRef, useState, ReactNode, useEffect, useContext, forwardRef, useImperativeHandle } from "react";
+import { createContext, useRef, useState, ReactNode, useEffect, useContext, forwardRef, useImperativeHandle, useCallback } from "react";
 import { Object3D } from "three";
 
 export const TransformContext = createContext<{
     setRef: (ref: Object3D | null) => void;
     resetControl: () => void;
+    updateCallBack: () => void;
 } | null>(null);
 
 interface TransformProviderProps {
@@ -14,6 +15,7 @@ interface TransformProviderProps {
 export const TransformProvider = forwardRef(({ children }: TransformProviderProps, ref) => {
     const meshRef = useRef<Object3D | null>(null);
     const controlRef = useRef(null);
+    const updateCallbackRef = useRef<() => void>(null);
 
     const [active, setActive] = useState(false);
 
@@ -40,6 +42,17 @@ export const TransformProvider = forwardRef(({ children }: TransformProviderProp
         }
     }
 
+    const updateCallBack = (callback: () => void) => {
+        updateCallbackRef.current = callback;
+    };
+
+    const handleTransformEnd = useCallback(() => {
+        if (controlRef.current?.object) {
+            updateCallbackRef.current?.(meshRef.current.position.toArray());
+        }
+    }, []);
+
+
     function resetControl() {
         if(meshRef.current)
             meshRef.current.material.color.set("red");
@@ -49,12 +62,13 @@ export const TransformProvider = forwardRef(({ children }: TransformProviderProp
     }
 
     return (
-        <TransformContext.Provider value={{ setRef, resetControl }}>
+        <TransformContext.Provider value={{ setRef, resetControl, updateCallBack }}>
             {active && meshRef.current && (
                 <TransformControls
                     ref={controlRef}
                     object={meshRef.current}
                     translationSnap={0.1}
+                    onObjectChange={handleTransformEnd}
                 />
             )}
             {children}
