@@ -1,12 +1,12 @@
 import './App.css'
 
-import Three from './components/organism/ObjectLoader.tsx'
+import ObjectLoader from './components/organism/ObjectLoader.tsx'
 
 function App() {
 
   return (
     <>
-      <Three/>
+      <ObjectLoader/>
     </>
   )
 }
